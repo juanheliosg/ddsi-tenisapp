@@ -2,7 +2,7 @@
   <div id="app">
     <div id="nav">
       <router-link to="/">Home</router-link> |
-      <router-link to="/tenistasno">Consultar tenistas no inscritos</router-link>
+      <router-link to="/tenistasno">Consultar tenistas no inscritos</router-link> |
       <router-link :to="{ name:'HorariosAsignados'}">Gestión de horarios</router-link>
     </div>
     <router-view/>
