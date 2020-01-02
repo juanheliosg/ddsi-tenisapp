@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from .models import Tenista,Tenistaedicionentrenador
-from .serializers import TenistaSerializer
-from rest_framework import generics
+from .models import Tenista, Tenistaedicionentrenador, Asignado
+from .serializers import TenistaSerializer, AsignadoSerializer
+from rest_framework import generics, viewsets
 
 # Create your views here.
 
@@ -19,5 +19,6 @@ class TenistaNoInscritosView(generics.ListAPIView):
         #ids = Tenistaedicionentrenador.objects.exclude(idedicion__exact = edicion).values('idtenista')[0]
         #return Tenista.objects.filter(idtenista = ids)
 
-
-     
+class AsignadoSet(viewsets.ModelViewSet):
+	queryset = Asignado.objects.all()
+	serializer_class = AsignadoSerializer
