@@ -2,12 +2,19 @@
     <div class="container">
         <div class="row">
             <div class="col text-left"> 
-                <h4>Horarios asignados a trabajadores</h4>
+				<div class="">
+					<h4>Horarios asignados a trabajadores</h4>
 
+					<b-button size="sm" variant="primary" :to="{ name:'NewHorario'}">
+						Nuevo Horario
+					</b-button>
+				</div>
+				<br>
+                
                 <div class="col-md-15">
                     <b-table striped hover :items='horarios' :fields='fields'>
-						<template slot="action">
-							<b-button size="sm" variant="primary">
+						<template v-slot:cell(action)="data">
+							<b-button size="sm" variant="primary" :to="{ name:'EditHorario', params: {horarioID: data.item.idtrabajador}}">
 								Editar
 							</b-button>
 							<b-button size="sm" variant="danger">
@@ -28,12 +35,12 @@ export default{
     data () {
         return { 
             fields: [
-            { key: 'idpista', label: 'ID_Pista'},
             { key: 'idtrabajador', label: 'ID_Trabajador'}, 
             { key: 'idedicion', label: 'ID_Edición'},
+			{ key: 'idpista', label: 'ID_Pista'},
             { key: 'fechaini', label: 'Fecha de Inicio'},
             { key: 'fechafin', label: 'Fecha de Finalización'},
-            { key: 'action', label: 'aaaa'}
+            { key: 'action', label: ''}
             ],
             horarios: [],
         }

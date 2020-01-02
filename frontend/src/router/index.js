@@ -6,6 +6,7 @@ import tenis from '@/components/tenis'
 
 import HorariosAsignados from '@/components/Horarios.vue'
 import EditHorario from '@/components/EditHorario.vue'
+import NewHorario from '@/components/NewHorario.vue'
 
 Vue.use(VueRouter)
 
@@ -34,7 +35,12 @@ const routes = [
     component: HorariosAsignados
   },
   {
-    path: '/horarios/edit',
+    path: '/horarios/new',
+    name: 'NewHorario',
+    component: NewHorario
+  },
+  {
+    path: '/horarios/:horarioID/edit',
     name: 'EditHorario',
     component: EditHorario
   }

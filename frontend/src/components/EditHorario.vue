@@ -9,11 +9,46 @@
             <div class = "col">
 				<div class = "card">
 					<div class = "card-body">
-						<form @onSubmit="onSubmit">
+						<form @submit="onSubmit">
 							<div class = "form-group row">
-								<label for = "title" class = "col-sm-2 col-form-label">Título</label>
+								<label for = "title" class = "col-sm-3 col-form-label">ID_Trabajador</label>
 								<div class = "col-sm-6">
-									<input type="text" placeholder="Título" name="title" class="form-control">
+									<input type="text" placeholder="1" name="title" class="form-control" v-model.trim="form.idtrabajador">
+								</div>
+							</div>
+							
+							<div class = "form-group row">
+								<label for = "title" class = "col-sm-3 col-form-label">ID_Edición</label>
+								<div class = "col-sm-6">
+									<input type="text" placeholder="1" name="title" class="form-control" v-model.trim="form.idedicion">
+								</div>
+							</div>
+							
+							<div class = "form-group row">
+								<label for = "title" class = "col-sm-3 col-form-label">ID_Pista</label>
+								<div class = "col-sm-6">
+									<input type="text" placeholder="1" name="title" class="form-control" v-model.trim="form.idpista">
+								</div>
+							</div>
+							
+							<div class = "form-group row">
+								<label for = "title" class = "col-sm-3 col-form-label">Fecha de Inicio</label>
+								<div class = "col-sm-6">
+									<input type="text" placeholder="2016-1-1" name="title" class="form-control" v-model.trim="form.fechaini">
+								</div>
+							</div>
+							
+							<div class = "form-group row">
+								<label for = "title" class = "col-sm-3 col-form-label">Fecha de Finalización</label>
+								<div class = "col-sm-6">
+									<input type="text" placeholder="2016-1-1" name="title" class="form-control" v-model.trim="form.fechafin">
+								</div>
+							</div>
+						
+							<div class = "rows">
+								<div class = "col text-left">
+									<b-button type="submit" variant="primary">Editar</b-button>
+									<b-button type="submit" class="btn-large-space" :to="{name: 'HorariosAsignados'}">Cancelar</b-button>
 								</div>
 							</div>
 						</form>
@@ -29,30 +64,53 @@ import axios from 'axios';
 
 export default{
     data(){
-        return { 
-            fields: [
-            { key: 'idpista', label: 'ID_Pista'},
-            { key: 'idtrabajador', label: 'ID_Trabajador'}, 
-            { key: 'idedicion', label: 'ID_Edición'},
-            { key: 'fechaini', label: 'Fecha de Inicio'},
-            { key: 'fechafin', label: 'Fecha de Finalización'},
-            ],
-            horarios: [],
+        return {
+			horarioID: this.$route.params.horarioID,
+            form: {
+				idtrabajador: '',
+				idedicion: '',
+				idpista: '',
+				fechaini: '',
+				fechafin: ''
+			},
+			horario: '',
         }
     },
-    methods: {
-        getHorarios(){
-            const path = 'http://localhost:8000/api/horarios/'
-            axios.get(path).then((response) => {
-                this.horarios = response.data
-            }).catch((error) => {
-                console.log(error)
-            });
-        },
-    },
-    created(){
-        this.getHorarios()
-    }
+	methods: {
+		onSubmit(event){
+			event.preventDefault()
+			const path = 'http://localhost:8000/api/horarios/numero/'.replace('numero', this.horarioID)
+			
+			axios.put(path, this.form).then((response) => {
+				this.form.idtrabajador = response.data.idtrabajador
+				this.form.idedicion = response.data.idedicion
+				this.form.idpista = response.data.idpista
+				this.form.fechaini = response.data.fechaini
+				this.form.fechafin = response.data.fechafin
+				
+				alert("Horario actualizado con exito")
+			}).catch((error) => {
+				console.log(error)
+			});
+		},
+		
+		getHorario(){
+			const path = 'http://localhost:8000/api/horarios/numero/'.replace('numero', this.horarioID)
+			
+			axios.get(path).then((response) => {
+				this.form.idtrabajador = response.data.idtrabajador
+				this.form.idedicion = response.data.idedicion
+				this.form.idpista = response.data.idpista
+				this.form.fechaini = response.data.fechaini
+				this.form.fechafin = response.data.fechafin
+			}).catch((error) => {
+				console.log(error)
+			});
+		},
+	},
+	created() {
+		this.getHorario()
+	}
 }
 </script>
 
