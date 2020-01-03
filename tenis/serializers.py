@@ -1,5 +1,6 @@
 from .models import Tenista
 from .models import Asignado
+from .models import Partido
 from rest_framework import serializers
 
 class TenistaSerializer(serializers.ModelSerializer):
@@ -10,4 +11,9 @@ class TenistaSerializer(serializers.ModelSerializer):
 class AsignadoSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Asignado
+		fields = '__all__'
+
+class PartidoSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Partido
 		fields = '__all__'

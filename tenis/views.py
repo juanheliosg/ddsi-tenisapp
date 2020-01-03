@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from .models import Tenista, Tenistaedicionentrenador, Asignado
-from .serializers import TenistaSerializer, AsignadoSerializer
+from .models import Tenista, Tenistaedicionentrenador, Asignado, Partido
+from .serializers import TenistaSerializer, AsignadoSerializer, PartidoSerializer
 from rest_framework import generics, viewsets
 
 # Create your views here.
@@ -22,3 +22,7 @@ class TenistaNoInscritosView(generics.ListAPIView):
 class AsignadoSet(viewsets.ModelViewSet):
 	queryset = Asignado.objects.all()
 	serializer_class = AsignadoSerializer
+
+class PartidoSet(viewsets.ModelViewSet):
+	queryset = Partido.objects.all()
+	serializer_class = PartidoSerializer

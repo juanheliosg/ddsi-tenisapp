@@ -4,11 +4,15 @@ import Home from '../views/Home.vue'
 
 import tenis from '@/components/tenis'
 
-import HorariosAsignados from '@/components/Horarios.vue'
+import Horarios from '@/components/Horarios.vue'
 import EditHorario from '@/components/EditHorario.vue'
 import NewHorario from '@/components/NewHorario.vue'
 import DeleteHorario from '@/components/DeleteHorario.vue'
 
+import Partidos from '@/components/Partidos.vue'
+import NewPartido from '@/components/NewPartido.vue'
+import EditPartido from '@/components/EditPartido.vue'
+import DeletePartido from '@/components/DeletePartido.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -33,7 +37,7 @@ const routes = [
   {
     path: '/horarios',
     name: 'HorariosAsignados',
-    component: HorariosAsignados
+    component: Horarios
   },
   {
     path: '/horarios/new',
@@ -49,7 +53,27 @@ const routes = [
     path: '/horarios/:horarioID/delete',
     name: 'DeleteHorario',
     component: DeleteHorario
-  }
+  },
+  {
+    path: '/partidos',
+    name: 'Partidos',
+    component: Partidos
+  },
+  {
+    path: '/partidos/new',
+    name: 'NewPartido',
+    component: NewPartido
+  },
+  {
+    path: '/partidos/:partidoID/edit',
+    name: 'EditPartido',
+    component: EditPartido
+  },
+  {
+    path: '/partidos/:partidoID/delete',
+    name: 'DeletePartido',
+    component: DeletePartido
+  },
 ]
 
 const router = new VueRouter({
