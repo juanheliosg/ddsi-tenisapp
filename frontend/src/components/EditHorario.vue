@@ -11,6 +11,13 @@
 					<div class = "card-body">
 						<form @submit="onSubmit">
 							<div class = "form-group row">
+								<label for = "title" class = "col-sm-3 col-form-label">ID_Asignado</label>
+								<div class = "col-sm-6">
+									<input type="text" placeholder="1" name="title" class="form-control" v-model.trim="form.id">
+								</div>
+							</div>
+						
+							<div class = "form-group row">
 								<label for = "title" class = "col-sm-3 col-form-label">ID_Trabajador</label>
 								<div class = "col-sm-6">
 									<input type="text" placeholder="1" name="title" class="form-control" v-model.trim="form.idtrabajador">
@@ -34,14 +41,14 @@
 							<div class = "form-group row">
 								<label for = "title" class = "col-sm-3 col-form-label">Fecha de Inicio</label>
 								<div class = "col-sm-6">
-									<input type="text" placeholder="2016-1-1" name="title" class="form-control" v-model.trim="form.fechaini">
+									<input type="text" placeholder="2016-01-01" name="title" class="form-control" v-model.trim="form.fechaini">
 								</div>
 							</div>
 							
 							<div class = "form-group row">
 								<label for = "title" class = "col-sm-3 col-form-label">Fecha de Finalización</label>
 								<div class = "col-sm-6">
-									<input type="text" placeholder="2016-1-1" name="title" class="form-control" v-model.trim="form.fechafin">
+									<input type="text" placeholder="2016-01-01" name="title" class="form-control" v-model.trim="form.fechafin">
 								</div>
 							</div>
 						
@@ -67,13 +74,13 @@ export default{
         return {
 			horarioID: this.$route.params.horarioID,
             form: {
+				id:'',
 				idtrabajador: '',
 				idedicion: '',
 				idpista: '',
 				fechaini: '',
 				fechafin: ''
 			},
-			horario: '',
         }
     },
 	methods: {
@@ -82,6 +89,7 @@ export default{
 			const path = 'http://localhost:8000/api/horarios/numero/'.replace('numero', this.horarioID)
 			
 			axios.put(path, this.form).then((response) => {
+				this.form.id = response.data.id
 				this.form.idtrabajador = response.data.idtrabajador
 				this.form.idedicion = response.data.idedicion
 				this.form.idpista = response.data.idpista
@@ -89,6 +97,7 @@ export default{
 				this.form.fechafin = response.data.fechafin
 				
 				alert("Horario actualizado con exito")
+				location.href = '#/horarios/'
 			}).catch((error) => {
 				console.log(error)
 			});
@@ -98,6 +107,7 @@ export default{
 			const path = 'http://localhost:8000/api/horarios/numero/'.replace('numero', this.horarioID)
 			
 			axios.get(path).then((response) => {
+				this.form.id = response.data.id
 				this.form.idtrabajador = response.data.idtrabajador
 				this.form.idedicion = response.data.idedicion
 				this.form.idpista = response.data.idpista

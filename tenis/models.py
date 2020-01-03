@@ -21,7 +21,8 @@ class Arbitro(models.Model):
 
 
 class Asignado(models.Model):
-    idtrabajador = models.OneToOneField('Trabaja', models.DO_NOTHING, db_column='idtrabajador', primary_key=True)
+    id = models.BigIntegerField(models.DO_NOTHING, db_column='ID', primary_key=True)
+    idtrabajador = models.ForeignKey('Trabaja', models.DO_NOTHING, db_column='idtrabajador')
     idedicion = models.ForeignKey('Trabaja', models.DO_NOTHING, db_column='idedicion',related_name='edicion')
     fechafin = models.DateField()
     fechaini = models.DateField()
@@ -34,7 +35,8 @@ class Asignado(models.Model):
 
 
 class Compite(models.Model):
-    idpista = models.OneToOneField('Partido', models.DO_NOTHING, db_column='idpista', primary_key=True)
+    id = models.BigIntegerField(models.DO_NOTHING, db_column='ID', primary_key=True)
+    idpista = models.OneToOneField('Partido', models.DO_NOTHING, db_column='idpista')
     fecha = models.ForeignKey('Partido', models.DO_NOTHING, db_column='fecha', related_name='fecha_compite')
     idedicion = models.ForeignKey('Tenistaedicionentrenador', models.DO_NOTHING,
     db_column='idedicion',related_name='edicion_compite')
@@ -58,7 +60,8 @@ class Compra(models.Model):
 
 
 class Compraentrada(models.Model):
-    idtipo = models.OneToOneField('Tipodeentrada', models.DO_NOTHING, db_column='idtipo', primary_key=True)
+    id = models.BigIntegerField(models.DO_NOTHING, db_column='ID', primary_key=True)
+    idtipo = models.OneToOneField('Tipodeentrada', models.DO_NOTHING, db_column='idtipo')
     idcompra = models.ForeignKey(Compra, models.DO_NOTHING, db_column='idcompra')
     cantidad = models.BigIntegerField(blank=True, null=True)
 
@@ -110,7 +113,8 @@ class Entrenador(models.Model):
 
 
 class Partido(models.Model):
-    idpista = models.OneToOneField('Pista', models.DO_NOTHING, db_column='idpista', primary_key=True)
+    id = models.BigIntegerField(models.DO_NOTHING, db_column='ID', primary_key=True)
+    idpista = models.OneToOneField('Pista', models.DO_NOTHING, db_column='idpista')
     fecha = models.DateField()
     idarbitro = models.ForeignKey(Arbitro, models.DO_NOTHING, db_column='idarbitro', blank=True, null=True)
     resultado = models.BigIntegerField(blank=True, null=True)
@@ -144,7 +148,8 @@ class Tenista(models.Model):
 
 
 class Tenistaedicionentrenador(models.Model):
-    idedicion = models.OneToOneField(Edicion, models.DO_NOTHING, db_column='idedicion', primary_key=True)
+    id = models.BigIntegerField(models.DO_NOTHING, db_column='ID', primary_key=True)
+    idedicion = models.OneToOneField(Edicion, models.DO_NOTHING, db_column='idedicion')
     idtenista = models.ForeignKey(Tenista, models.DO_NOTHING, db_column='idtenista')
     identrenador = models.ForeignKey(Entrenador, models.DO_NOTHING, db_column='identrenador', blank=True, null=True)
 
@@ -165,7 +170,8 @@ class Tipodeentrada(models.Model):
 
 
 class Trabaja(models.Model):
-    idtrabajador = models.OneToOneField('Trabajador', models.DO_NOTHING, db_column='idtrabajador', primary_key=True)
+    id = models.AutoField(models.DO_NOTHING, db_column='ID', primary_key=True)
+    idtrabajador = models.OneToOneField('Trabajador', models.DO_NOTHING, db_column='idtrabajador')
     idedicion = models.ForeignKey(Edicion, models.DO_NOTHING, db_column='idedicion')
 
     class Meta:

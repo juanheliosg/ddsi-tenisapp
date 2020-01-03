@@ -14,10 +14,10 @@
                 <div class="col-md-15">
                     <b-table striped hover :items='horarios' :fields='fields'>
 						<template v-slot:cell(action)="data">
-							<b-button size="sm" variant="primary" :to="{ name:'EditHorario', params: {horarioID: data.item.idtrabajador}}">
+							<b-button size="sm" variant="primary" :to="{ name:'EditHorario', params: {horarioID: data.item.id}}">
 								Editar
 							</b-button>
-							<b-button size="sm" variant="danger">
+							<b-button size="sm" variant="danger" :to="{ name:'DeleteHorario', params: {horarioID: data.item.id}}">
 								Eliminar
 							</b-button>
 						</template>
@@ -35,6 +35,7 @@ export default{
     data () {
         return { 
             fields: [
+            { key: 'id', label: 'ID_Asignado'}, 
             { key: 'idtrabajador', label: 'ID_Trabajador'}, 
             { key: 'idedicion', label: 'ID_Edición'},
 			{ key: 'idpista', label: 'ID_Pista'},
