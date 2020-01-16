@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models,connection
 
 class Usuario(models.Model):
     idusuario = models.BigIntegerField(primary_key=True)
@@ -97,6 +97,20 @@ class Asignado(models.Model):
         managed = False
         db_table = 'asignado'
         unique_together = (('idtrabajador', 'idedicion', 'fechafin', 'fechaini', 'idpista'),)
+    
+    def save(self, *args, **kwargs):
+        """
+        This is a complete disaster. We needed to overrided this method in order to avoid a hardcore Oracle error in the
+        Database
+        """
+        if (self.pk is None):
+            with connection.cursor() as cursor: 
+                query =  "INSERT into Asignado (ID, IDTrabajador, IDEdicion, FechaFin, FechaIni, IDPista) values ({},{},{},TO_DATE(\'{}\',\'mm/dd/yyyy\'), TO_DATE(\'{}\',\'mm/dd/yyyy\'),{});".format(self.id, self.idtrabajador_id, self.idedicion_id,self.fechafin.strftime('%m/%d/%Y'),self.fechaini.strftime('%m/%d/%Y'), self.idpista.idpista); 
+                cursor.execute(query)
+
+            cursor.close()
+
+
 
 class Tenistaedicionentrenador(models.Model):
     id = models.BigIntegerField(primary_key=True)
@@ -108,7 +122,8 @@ class Tenistaedicionentrenador(models.Model):
         managed = False
         db_table = 'tenistaedicionentrenador'
         unique_together = (('idedicion', 'idtenista'),)
-        
+
+            
 class Partido(models.Model):
     id = models.BigIntegerField(primary_key=True)
     idpista = models.ForeignKey('Pista', models.PROTECT, db_column='idpista', blank=True, null=True)
@@ -120,6 +135,34 @@ class Partido(models.Model):
         managed = False
         db_table = 'partido'
         unique_together = (('idpista', 'fecha'),)
+    def save(self, *args, **kwargs):
+        """
+        This is a complete disaster. We needed to overrided this method in order to avoid a hardcore Oracle error in the
+        Database
+        """
+        p = Partido.objects.filter(id = self.id)
+        if (not p):
+            with connection.cursor() as cursor: 
+                query =  "INSERT into Partido (ID, Fecha, Resultado, IDPista, IDArbitro) values ({},TO_DATE(\'{}\',\'mm/dd/yyyy\'), {},{},{});".format(self.id,self.fecha.strftime('%m/%d/%Y'), self.resultado, self.idpista_id,self.idarbitro_id) 
+                cursor.execute(query)
+                cursor.close() 
+       
+        def update(self, *args, **kwargs):
+            with connection.cursor() as cursor: 
+                query =  "UPDATE Partido SET ID = {}, Fecha = TO_DATE(\'{}\',\'mm/dd/yyyy\'), Resultado = {}, IDPista = {}, IDArbitro = {};".format(self.id,self.fecha.strftime('%m/%d/%Y'),self.resultado, self.idpista_id,self.idarbitro_id) 
+                
+                cursor.execute(query)
+            cursor.close()
+
+
+
+   
+
+            
+
+
+
+
 
 class Compite(models.Model):
     id = models.BigIntegerField(primary_key=True)
@@ -181,106 +224,4 @@ class Comprapagada(models.Model):
         managed = False
         db_table = 'comprapagada'
 
-class AuthUser(models.Model):
-    password = models.CharField(max_length=128, blank=True, null=True)
-    last_login = models.DateTimeField(blank=True, null=True)
-    is_superuser = models.BooleanField()
-    username = models.CharField(unique=True, max_length=150, blank=True, null=True)
-    first_name = models.CharField(max_length=30, blank=True, null=True)
-    last_name = models.CharField(max_length=150, blank=True, null=True)
-    email = models.CharField(max_length=254, blank=True, null=True)
-    is_staff = models.BooleanField()
-    is_active = models.BooleanField()
-    date_joined = models.DateTimeField()
 
-    class Meta:
-        managed = False
-        db_table = 'auth_user'
-
-class DjangoContentType(models.Model):
-    app_label = models.CharField(max_length=100, blank=True, null=True)
-    model = models.CharField(max_length=100, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'django_content_type'
-        unique_together = (('app_label', 'model'),)
-
-class DjangoAdminLog(models.Model):
-    action_time = models.DateTimeField()
-    object_id = models.TextField(blank=True, null=True)
-    object_repr = models.CharField(max_length=200, blank=True, null=True)
-    action_flag = models.IntegerField()
-    change_message = models.TextField(blank=True, null=True)
-    content_type = models.ForeignKey('DjangoContentType', models.PROTECT, blank=True, null=True)
-    user = models.ForeignKey(AuthUser, models.PROTECT)
-
-    class Meta:
-        managed = False
-        db_table = 'django_admin_log'
-
-
-class DjangoMigrations(models.Model):
-    app = models.CharField(max_length=255, blank=True, null=True)
-    name = models.CharField(max_length=255, blank=True, null=True)
-    applied = models.DateTimeField()
-
-    class Meta:
-        managed = False
-        db_table = 'django_migrations'
-
-
-class DjangoSession(models.Model):
-    session_key = models.CharField(primary_key=True, max_length=40)
-    session_data = models.TextField(blank=True, null=True)
-    expire_date = models.DateTimeField()
-
-    class Meta:
-        managed = False
-        db_table = 'django_session'
-
-class AuthGroup(models.Model):
-    name = models.CharField(unique=True, max_length=150, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'auth_group'
-
-class AuthPermission(models.Model):
-    name = models.CharField(max_length=255, blank=True, null=True)
-    content_type = models.ForeignKey('DjangoContentType', models.PROTECT)
-    codename = models.CharField(max_length=100, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'auth_permission'
-        unique_together = (('content_type', 'codename'),)
-
-class AuthGroupPermissions(models.Model):
-    group = models.ForeignKey(AuthGroup, models.PROTECT)
-    permission = models.ForeignKey('AuthPermission', models.PROTECT)
-
-    class Meta:
-        managed = False
-        db_table = 'auth_group_permissions'
-        unique_together = (('group', 'permission'),)
-
-
-class AuthUserGroups(models.Model):
-    user = models.ForeignKey(AuthUser, models.PROTECT)
-    group = models.ForeignKey(AuthGroup, models.PROTECT)
-
-    class Meta:
-        managed = False
-        db_table = 'auth_user_groups'
-        unique_together = (('user', 'group'),)
-
-
-class AuthUserUserPermissions(models.Model):
-    user = models.ForeignKey(AuthUser, models.PROTECT)
-    permission = models.ForeignKey(AuthPermission, models.PROTECT)
-
-    class Meta:
-        managed = False
-        db_table = 'auth_user_user_permissions'
-        unique_together = (('user', 'permission'),)
