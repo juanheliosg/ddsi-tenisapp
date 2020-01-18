@@ -13,6 +13,10 @@ import Partidos from '@/components/Partidos.vue'
 import NewPartido from '@/components/NewPartido.vue'
 import EditPartido from '@/components/EditPartido.vue'
 import DeletePartido from '@/components/DeletePartido.vue'
+
+import Compras from '@/components/Compras.vue'
+import NewCompra from '@/components/NewCompra.vue'
+import DeleteCompra from '@/components/DeleteCompra.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -73,6 +77,21 @@ const routes = [
     path: '/partidos/:partidoID/delete',
     name: 'DeletePartido',
     component: DeletePartido
+  },
+  {
+    path: '/compras',
+    name: 'Compras',
+    component: Compras
+  },
+  {
+    path: '/compras/new',
+    name: 'NewCompra',
+    component: NewCompra
+  },
+  {
+    path: '/compras/:compraID/delete',
+    name: 'DeleteCompra',
+    component: DeleteCompra
   },
 ]
 

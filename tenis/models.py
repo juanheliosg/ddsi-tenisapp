@@ -1,4 +1,5 @@
 from django.db import models,connection
+import datetime
 
 class Usuario(models.Model):
     idusuario = models.BigIntegerField(primary_key=True)
@@ -103,11 +104,17 @@ class Asignado(models.Model):
         This is a complete disaster. We needed to overrided this method in order to avoid a hardcore Oracle error in the
         Database
         """
-        if (self.pk is None):
+        same_id = Asignado.objects.filter(id = self.id)
+        if (not same_id):
             with connection.cursor() as cursor: 
-                query =  "INSERT into Asignado (ID, IDTrabajador, IDEdicion, FechaFin, FechaIni, IDPista) values ({},{},{},TO_DATE(\'{}\',\'mm/dd/yyyy\'), TO_DATE(\'{}\',\'mm/dd/yyyy\'),{});".format(self.id, self.idtrabajador_id, self.idedicion_id,self.fechafin.strftime('%m/%d/%Y'),self.fechaini.strftime('%m/%d/%Y'), self.idpista.idpista); 
+                query =  "INSERT into Asignado (ID, IDTrabajador, IDEdicion, FechaFin, FechaIni, IDPista) values ({},{},{},TO_DATE(\'{}\',\'mm/dd/yyyy\'), TO_DATE(\'{}\',\'mm/dd/yyyy\'),{});".format(self.id, self.idtrabajador_id, self.idedicion_id,self.fechafin.strftime('%m/%d/%Y'),self.fechaini.strftime('%m/%d/%Y'), self.idpista.idpista);
                 cursor.execute(query)
-
+            cursor.close()
+        else:
+            with connection.cursor() as cursor:
+                query =  "UPDATE Asignado SET IDTrabajador = {}, IDEdicion = {}, FechaFin = TO_DATE(\'{}\',\'mm/dd/yyyy\'), FechaIni = TO_DATE(\'{}\',\'mm/dd/yyyy\'), IDPista = {} WHERE ID = {};".format(self.idtrabajador_id, self.idedicion_id, self.fechafin.strftime('%m/%d/%Y'), self.fechaini.strftime('%m/%d/%Y'), self.idpista_id, self.id) 
+                
+                cursor.execute(query)
             cursor.close()
 
 
@@ -127,7 +134,7 @@ class Tenistaedicionentrenador(models.Model):
 class Partido(models.Model):
     id = models.BigIntegerField(primary_key=True)
     idpista = models.ForeignKey('Pista', models.PROTECT, db_column='idpista', blank=True, null=True)
-    fecha = models.DateField()
+    fecha = models.DateTimeField()
     idarbitro = models.ForeignKey(Arbitro, models.PROTECT, db_column='idarbitro', blank=True, null=True)
     resultado = models.BigIntegerField(blank=True, null=True)
 
@@ -145,11 +152,10 @@ class Partido(models.Model):
             with connection.cursor() as cursor: 
                 query =  "INSERT into Partido (ID, Fecha, Resultado, IDPista, IDArbitro) values ({},TO_DATE(\'{}\',\'mm/dd/yyyy\'), {},{},{});".format(self.id,self.fecha.strftime('%m/%d/%Y'), self.resultado, self.idpista_id,self.idarbitro_id) 
                 cursor.execute(query)
-                cursor.close() 
-       
-        def update(self, *args, **kwargs):
+                cursor.close()
+        else:
             with connection.cursor() as cursor: 
-                query =  "UPDATE Partido SET ID = {}, Fecha = TO_DATE(\'{}\',\'mm/dd/yyyy\'), Resultado = {}, IDPista = {}, IDArbitro = {};".format(self.id,self.fecha.strftime('%m/%d/%Y'),self.resultado, self.idpista_id,self.idarbitro_id) 
+                query =  "UPDATE Partido SET Fecha = TO_DATE(\'{}\',\'mm/dd/yyyy\'), Resultado = {}, IDPista = {}, IDArbitro = {} WHERE ID = {};".format(self.fecha.strftime('%m/%d/%Y'),self.resultado, self.idpista_id,self.idarbitro_id, self.id) 
                 
                 cursor.execute(query)
             cursor.close()
@@ -186,6 +192,14 @@ class Compra(models.Model):
     class Meta:
         managed = False
         db_table = 'compra'
+    def save(self, *args, **kwargs):
+
+        same_id = Compra.objects.filter(idcompra = self.idcompra)
+        if (not same_id):
+            with connection.cursor() as cursor: 
+                query =  "INSERT into Compra (IDCompra, IDEdicion, fecha_inicio, IDUsuario) values ({},{},TO_DATE(\'{}\',\'mm/dd/yyyy\'),{});".format(self.idcompra, self.idedicion.idedicion, datetime.date.today().strftime('%m/%d/%Y'), self.idusuario.idusuario);
+                cursor.execute(query)
+            cursor.close()
 
 class Comprafinalizada(models.Model):
     idcompra = models.OneToOneField(Compra, models.PROTECT, db_column='idcompra', primary_key=True)

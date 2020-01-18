@@ -41,7 +41,7 @@
 							<div class = "form-group row">
 								<label for = "title" class = "col-sm-3 col-form-label">Fecha</label>
 								<div class = "col-sm-6">
-									<input type="text" placeholder="2050-01-01" name="title" class="form-control" v-model.trim="form.fecha">
+									<input type="text" placeholder="2019-01-25T14:00:00Z" name="title" class="form-control" v-model.trim="form.fecha">
 								</div>
 							</div>
 						
@@ -90,6 +90,7 @@ export default{
 				location.href = '#/partidos/'
 			}).catch((error) => {
 				console.log(error)
+				alert(error)
 			});
 		},
 	},

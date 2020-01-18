@@ -115,6 +115,7 @@ export default{
 				this.form.fechafin = response.data.fechafin
 			}).catch((error) => {
 				console.log(error)
+				alert(error)
 			});
 		},
 	},

@@ -100,6 +100,7 @@ export default{
 				location.href = '#/horarios/'
 			}).catch((error) => {
 				console.log(error)
+				alert(error)
 			});
 		},
 	},

@@ -2,7 +2,7 @@
     <div class = "container">
         <div class = "row">
             <div class = "col text-left">
-                <h2>Editar Horario</h2>
+                <h2>Editar Partido</h2>
             </div>
         </div>
         <div class = "row">
@@ -41,7 +41,7 @@
 							<div class = "form-group row">
 								<label for = "title" class = "col-sm-3 col-form-label">Fecha</label>
 								<div class = "col-sm-6">
-									<input type="text" placeholder="2050-01-01" name="title" class="form-control" v-model.trim="form.fecha">
+									<input type="text" placeholder="2019-01-25T14:00:00Z" name="title" class="form-control" v-model.trim="form.fecha">
 								</div>
 							</div>
 						
@@ -105,6 +105,7 @@ export default{
 				this.form.fecha = response.data.fecha
 			}).catch((error) => {
 				console.log(error)
+				alert(error)
 			});
 		},
 	},
